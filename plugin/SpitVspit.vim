@@ -10,7 +10,7 @@
 function! Spit(...)
 	let l:sp = 'split'
 	if a:0 == 0
-		execute sp
+		execute l:sp
 	else
 		if a:1 == "--help"
 			echo " "
@@ -22,19 +22,19 @@ function! Spit(...)
 			echo "       (sp is remapped to this function.)"
 			echo " "
 		else
-			let l:i = 1
-			while l:i <= a:0
-				execute 'let file = glob (a:' . l:i .')'
+			let i = 1
+			while i <= a:0
+				execute 'let file = expand(a:' . i .')'
 				if match( file, '/\*/' )
 					let l:files = expand( file )
 					while l:files != ""
 						let l:thisfile = substitute( l:files, "\n.*$", "", "" )
 						let l:files = substitute( l:files, l:thisfile, "", "" )
 						let l:files = substitute( l:files, "^\n", "", "" )
-						execute sp . ' ' . l:thisfile
+						execute l:sp . ' ' . l:thisfile
 					endwhile
 				else
-					execute sp . ' ' . file
+					execute l:sp . ' ' . file
 				endif
 				let i = i + 1
 			endwhile
@@ -48,7 +48,7 @@ cab sp Spit
 function! Vspit(...)
 	let l:sp = 'vsplit'
 	if a:0 == 0
-		execute sp
+		execute l:sp
 	else
 		if a:1 == "--help"
 			echo " "
@@ -60,19 +60,19 @@ function! Vspit(...)
 			echo "       (vsp is remapped to this function.)"
 			echo " "
 		else
-			let l:i = 1
-			while l:i <= a:0
-				execute 'let file = glob (a:' . l:i .')'
+			let i = 1
+			while i <= a:0
+				execute 'let file = expand(a:' . i .')'
 				if match( file, '/\*/' )
 					let l:files = expand( file )
 					while l:files != ""
 						let l:thisfile = substitute( l:files, "\n.*$", "", "" )
 						let l:files = substitute( l:files, l:thisfile, "", "" )
 						let l:files = substitute( l:files, "^\n", "", "" )
-						execute sp . ' ' . l:thisfile
+						execute l:sp . ' ' . l:thisfile
 					endwhile
 				else
-					execute sp . ' ' . file
+					execute l:sp . ' ' . file
 				endif
 				let i = i + 1
 			endwhile
