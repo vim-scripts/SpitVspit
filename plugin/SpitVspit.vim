@@ -9,7 +9,7 @@
 
 function! Spit(...)
 	let l:sp = 'split'
-	if a:0 == 0
+	if a:0 == 0 || empty(a:1)
 		execute l:sp
 	else
 		" Put all the arguments in a list, in case it has got a list already
@@ -55,7 +55,7 @@ cab sp Spit
 
 function! Vspit(...)
 	let l:sp = 'vsplit'
-	if a:0 == 0
+	if a:0 == 0 || empty(a:1)
 		execute l:sp
 	else
 		" Put all the arguments in a list, in case it has got a list already
