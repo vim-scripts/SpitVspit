@@ -4,9 +4,14 @@
 "  By salmanhalim
 "
 "  Function written by Gael Induni
-"  Version 2.0
+"  Version 2.0.1
 "  December 2010
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+if exists("g:loaded_SpitVspit") && g:loaded_SpitVspit
+	finish
+endif
+let g:loaded_SpitVspit = 1
 
 function! Spit(choice,direction,...)
 	let l:sp = 'split'
