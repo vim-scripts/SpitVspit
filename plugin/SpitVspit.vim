@@ -4,7 +4,7 @@
 "  By salmanhalim
 "
 "  Function written by Gael Induni
-"  Version 2.0.1
+"  Version 2.0.2
 "  December 2010
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -12,12 +12,14 @@ if exists("g:loaded_SpitVspit") && g:loaded_SpitVspit
 	finish
 endif
 let g:loaded_SpitVspit = 1
+let g:SpitVspit_version = '2.0.2'
 
 function! Spit(choice,direction,...)
 	let l:sp = 'split'
 	let l:isbelow = &splitbelow
 	let l:isright = &splitright
 	let l:dirchange = ''
+	let l:old_ok = 0
 	let l:stop_cond = 1
 	let i = a:0
 	if a:choice == 0
@@ -35,6 +37,11 @@ function! Spit(choice,direction,...)
 		endif
 	elseif a:choice == 2
 		let l:sp = 'args'
+		let l:old_file = @%
+		if l:old_file != ''
+			let l:sp = l:sp . ' ' . l:old_file
+			let l:old_ok = 1
+		endif
 		let i = 1
 	endif
 	execute l:dirchange
@@ -43,49 +50,43 @@ function! Spit(choice,direction,...)
 			execute l:sp
 		endif
 	else
-		if a:1 == "--help"
-			echo " "
-			echo "     Spit (Sp) : splits the screen the usual way, but allows"
-			echo "       multiple files splitting/editting."
-			echo "     Usage: sp a b c..."
-			echo "     Usage: vsp a b c..."
-			echo "     Usage: e a b c..."
-			echo "       It is allowed to match multiple files with the *"
-			echo "       (regexp) character."
-			echo "       (sp, vsp and e are remapped to this function.)"
-			echo " "
-		else
-			while l:stop_cond
-				execute 'let file = expand( a:' . i .' )'
-				if match( file, '/\*/' )
-					let l:files = expand( file )
-					while l:files != ""
-						let l:thisfile = substitute( l:files, "\n.*$", "", "" )
-						let l:files = substitute( l:files, l:thisfile, "", "" )
-						let l:files = substitute( l:files, "^\n", "", "" )
-						if a:choice < 2
-							execute l:sp . ' ' . l:thisfile
-						else
-							let l:sp = l:sp . ' ' . l:thisfile
-						endif
-					endwhile
-				else
+		while l:stop_cond
+			execute 'let file = expand( a:' . i .' )'
+			if match( file, '/\*/' )
+				let l:files = expand( file )
+				if match( l:files, '*' ) != -1
+					echoerr "Sorry, files " . l:files . " not found..."
+					break
+				endif
+				while l:files != ""
+					let l:thisfile = substitute( l:files, "\n.*$", "", "" )
+					let l:files = substitute( l:files, l:thisfile, "", "" )
+					let l:files = substitute( l:files, "^\n", "", "" )
 					if a:choice < 2
-						execute l:sp . ' ' . file
+						execute l:sp . ' ' . l:thisfile
 					else
-						let l:sp = l:sp . ' ' . file
+						let l:sp = l:sp . ' ' . l:thisfile
 					endif
-				endif
+				endwhile
+			else
 				if a:choice < 2
-					let i = i - 1
-					let l:stop_cond = i > 0
+					execute l:sp . ' ' . file
 				else
-					let i = i + 1
-					let l:stop_cond = i <= a:0
+					let l:sp = l:sp . ' ' . file
 				endif
-			endwhile
-			if a:choice == 2
-				execute l:sp
+			endif
+			if a:choice < 2
+				let i = i - 1
+				let l:stop_cond = i > 0
+			else
+				let i = i + 1
+				let l:stop_cond = i <= a:0
+			endif
+		endwhile
+		if a:choice == 2
+			execute l:sp
+			if l:old_ok
+				execute 'next'
 			endif
 		endif
 	endif

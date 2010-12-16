@@ -6,6 +6,6 @@ This is a little script I did because I have always wanted to type
 
 So... This does it now!
 
-You just have to source this file in your vimrc and that will remap sp, vsp and e abbreviation to my function.
+You just have to put this file in the plugin directory and the help in the doc directory and that will remap sp and vsp abbreviation to my function, allowing you to type :vsp *.txt
 
 Let me know if you find some bugs ;-)
