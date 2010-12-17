@@ -4,7 +4,7 @@
 "  By salmanhalim
 "
 "  Function written by Gael Induni
-"  Version 2.0.2
+"  Version 2.0.3
 "  December 2010
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -12,7 +12,7 @@ if exists("g:loaded_SpitVspit") && g:loaded_SpitVspit
 	finish
 endif
 let g:loaded_SpitVspit = 1
-let g:SpitVspit_version = '2.0.2'
+let g:SpitVspit_version = '2.0.3'
 
 function! Spit(choice,direction,...)
 	let l:sp = 'split'
@@ -20,6 +20,7 @@ function! Spit(choice,direction,...)
 	let l:isright = &splitright
 	let l:dirchange = ''
 	let l:old_ok = 0
+	let l:keep_first = ''
 	let l:stop_cond = 1
 	let i = a:0
 	if a:choice == 0
@@ -36,11 +37,13 @@ function! Spit(choice,direction,...)
 			let l:dirchange = 'set invsplitright'
 		endif
 	elseif a:choice == 2
-		let l:sp = 'args'
 		let l:old_file = @%
 		if l:old_file != ''
-			let l:sp = l:sp . ' ' . l:old_file
+			"let l:sp = l:sp . ' ' . l:old_file
 			let l:old_ok = 1
+			let l:sp = '99argadd'
+		else
+			let l:sp = 'args'
 		endif
 		let i = 1
 	endif
@@ -52,16 +55,23 @@ function! Spit(choice,direction,...)
 	else
 		while l:stop_cond
 			execute 'let file = expand( a:' . i .' )'
-			if match( file, '/\*/' )
+			if l:keep_first == ''
+				let l:keep_first = file
+			endif
+			if match( file, '/\*/' ) > -1
 				let l:files = expand( file )
 				if match( l:files, '*' ) != -1
 					echoerr "Sorry, files " . l:files . " not found..."
 					break
 				endif
+				let l:keep_first = ''
 				while l:files != ""
 					let l:thisfile = substitute( l:files, "\n.*$", "", "" )
 					let l:files = substitute( l:files, l:thisfile, "", "" )
 					let l:files = substitute( l:files, "^\n", "", "" )
+					if l:keep_first == ''
+						let l:keep_first = l:thisfile
+					endif
 					if a:choice < 2
 						execute l:sp . ' ' . l:thisfile
 					else
@@ -86,7 +96,9 @@ function! Spit(choice,direction,...)
 		if a:choice == 2
 			execute l:sp
 			if l:old_ok
-				execute 'next'
+				while @% != l:keep_first
+					execute 'next'
+				endwhile
 			endif
 		endif
 	endif

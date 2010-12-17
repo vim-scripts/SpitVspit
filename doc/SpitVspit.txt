@@ -12,11 +12,11 @@ REQUIREMENTS *SpitVspit-requirements*
 
 This plugin is based upon the simplest commands and don't require much extra
 stuff (if any). What is used are the commands
-  |split|
-  |args|
-  |substitute|
-  |command|
-  |cabclear|
+  |:split|
+  |:args|
+  |:substitute|
+  |:command|
+  |:cabclear|
 
 COMMANDS *SpitVspit-commands*
 
@@ -34,7 +34,8 @@ Vsp[it] *Vspit* *Vsp*
 E *E*
     Adds to your editting files the ones that you give. They can also be more
     than one or conaining the regexp '*' character. (See |Spit| for further
-    infos).
+    infos). If you want to see what files you are editing, use the |:args|
+    command.
     :e is remapped to this function.
 
 SpitUp (Spu) *SpitUp* *Spu*
