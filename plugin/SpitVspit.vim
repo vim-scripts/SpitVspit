@@ -3,16 +3,18 @@
 "  Inspired from http://vim.wikia.com/wiki/Opening_multiple_files_from_a_single_command-line
 "  By salmanhalim
 "
-"  Function written by Gael Induni
-"  Version 2.0.3
+"  Plugin written and maintained by Gael Induni
+"  Version 2.0.4
 "  December 2010
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" To be always up-to-date:
+" GetLatestVimScript: 2918 1 :AutoInsall: SpitVspit
 
 if exists("g:loaded_SpitVspit") && g:loaded_SpitVspit
 	finish
 endif
 let g:loaded_SpitVspit = 1
-let g:SpitVspit_version = '2.0.3'
+let g:SpitVspit_version = '2.0.4'
 
 function! Spit(choice,direction,...)
 	let l:sp = 'split'
