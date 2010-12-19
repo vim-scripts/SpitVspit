@@ -8,7 +8,7 @@
 "  December 2010
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " To be always up-to-date:
-" GetLatestVimScript: 2918 1 :AutoInsall: SpitVspit
+" GetLatestVimScripts: 2918 1 :AutoInstall: SpitVspit
 
 if exists("g:loaded_SpitVspit") && g:loaded_SpitVspit
 	finish
