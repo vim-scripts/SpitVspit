@@ -1,11 +1,11 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" This is vimsplit function to split among many files even :sp *.cpp<cr> works!!
+"  Plugin written and maintained by Gael Induni
+" This is SpitVspit function to split among many files even :sp *.cpp<cr> works!!
+"  Last modified: Wed 29 Dec 2010 10:06:54 PM CET
+"  Version 2.0.6
+"
 "  Inspired from http://vim.wikia.com/wiki/Opening_multiple_files_from_a_single_command-line
 "  By salmanhalim
-"
-"  Plugin written and maintained by Gael Induni
-"  Version 2.0.4
-"  December 2010
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " To be always up-to-date:
 " GetLatestVimScripts: 2918 1 :AutoInstall: SpitVspit
@@ -14,7 +14,7 @@ if exists("g:loaded_SpitVspit") && g:loaded_SpitVspit
 	finish
 endif
 let g:loaded_SpitVspit = 1
-let g:SpitVspit_version = '2.0.4'
+let g:SpitVspit_version = '2.0.6'
 
 function! Spit(choice,direction,...)
 	let l:sp = 'split'
@@ -24,22 +24,16 @@ function! Spit(choice,direction,...)
 	let l:old_ok = 0
 	let l:keep_first = ''
 	let l:stop_cond = 1
+	let l:old_file = @%
 	let i = a:0
-	if a:choice == 0
-		if a:direction > 0 && l:isbelow
-			let l:dirchange = 'set invsplitbelow'
-		elseif a:direction < 0 && !l:isbelow
-			let l:dirchange = 'set invsplitbelow'
-		endif
+	if a:choice == 0 && ( ( a:direction > 0 && l:isbelow ) || ( a:direction < 0 && !l:isbelow ) )
+		let l:dirchange = 'set invsplitbelow'
 	elseif a:choice == 1
 		let l:sp = 'vsplit'
-		if a:direction > 0 && !l:isright
-			let l:dirchange = 'set invsplitright'
-		elseif a:direction < 0 && l:isright
+		if ( a:direction > 0 && !l:isright ) || ( a:direction < 0 && l:isright )
 			let l:dirchange = 'set invsplitright'
 		endif
 	elseif a:choice == 2
-		let l:old_file = @%
 		if l:old_file != ''
 			"let l:sp = l:sp . ' ' . l:old_file
 			let l:old_ok = 1
@@ -57,16 +51,12 @@ function! Spit(choice,direction,...)
 	else
 		while l:stop_cond
 			execute 'let file = expand( a:' . i .' )'
-			if l:keep_first == ''
-				let l:keep_first = file
-			endif
-			if match( file, '/\*/' ) > -1
+			if match( file, '*' ) > -1 || match( file, '\n' )
 				let l:files = expand( file )
 				if match( l:files, '*' ) != -1
-					echoerr "Sorry, files " . l:files . " not found..."
+					echoerr 'Sorry, files ' . l:files . ' not found...'
 					break
 				endif
-				let l:keep_first = ''
 				while l:files != ""
 					let l:thisfile = substitute( l:files, "\n.*$", "", "" )
 					let l:files = substitute( l:files, l:thisfile, "", "" )
@@ -74,13 +64,17 @@ function! Spit(choice,direction,...)
 					if l:keep_first == ''
 						let l:keep_first = l:thisfile
 					endif
-					if a:choice < 2
+					if a:choice < 2 && l:thisfile != l:old_file
+						" Don't split *.* if current file
 						execute l:sp . ' ' . l:thisfile
-					else
+					elseif a:choice == 2
 						let l:sp = l:sp . ' ' . l:thisfile
 					endif
 				endwhile
 			else
+				if l:keep_first == ''
+					let l:keep_first = file
+				endif
 				if a:choice < 2
 					execute l:sp . ' ' . file
 				else
