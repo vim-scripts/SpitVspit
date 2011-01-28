@@ -1,8 +1,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Plugin written and maintained by Gael Induni
 " This is SpitVspit function to split among many files even :sp *.cpp<cr> works!!
-"  Last modified: Wed 29 Dec 2010 10:06:54 PM CET
-"  Version 2.0.6
+"  Last modified: Fri 28 Jan 2011 09:38:10 AM CET
+"  Version 2.1
 "
 "  Inspired from http://vim.wikia.com/wiki/Opening_multiple_files_from_a_single_command-line
 "  By salmanhalim
@@ -14,13 +14,15 @@ if exists("g:loaded_SpitVspit") && g:loaded_SpitVspit
 	finish
 endif
 let g:loaded_SpitVspit = 1
-let g:SpitVspit_version = '2.0.6'
+let g:SpitVspit_version = '2.1'
 
 function! Spit(choice,direction,...)
 	let l:sp = 'split'
 	let l:isbelow = &splitbelow
 	let l:isright = &splitright
 	let l:dirchange = ''
+	let l:w = 0
+	let l:memory = 0
 	let l:old_ok = 0
 	let l:keep_first = ''
 	let l:stop_cond = 1
@@ -29,6 +31,12 @@ function! Spit(choice,direction,...)
 	if a:choice == 0 && ( ( a:direction > 0 && l:isbelow ) || ( a:direction < 0 && !l:isbelow ) )
 		let l:dirchange = 'set invsplitbelow'
 	elseif a:choice == 1
+		let l:sp = 'vsplit'
+		if ( a:direction > 0 && !l:isright ) || ( a:direction < 0 && l:isright )
+			let l:dirchange = 'set invsplitright'
+		endif
+	elseif a:choice == -1
+		let l:w = 1
 		let l:sp = 'vsplit'
 		if ( a:direction > 0 && !l:isright ) || ( a:direction < 0 && l:isright )
 			let l:dirchange = 'set invsplitright'
@@ -51,7 +59,7 @@ function! Spit(choice,direction,...)
 	else
 		while l:stop_cond
 			execute 'let file = expand( a:' . i .' )'
-			if match( file, '*' ) > -1 || match( file, '\n' )
+			if match( file, '*' ) > -1 || match( file, '\n' ) > -1
 				let l:files = expand( file )
 				if match( l:files, '*' ) != -1
 					echoerr 'Sorry, files ' . l:files . ' not found...'
@@ -67,6 +75,10 @@ function! Spit(choice,direction,...)
 					if a:choice < 2 && l:thisfile != l:old_file
 						" Don't split *.* if current file
 						execute l:sp . ' ' . l:thisfile
+						if a:choice == -1 && l:w == 1
+							let l:w = 0
+							let l:sp = 'split'
+						endif
 					elseif a:choice == 2
 						let l:sp = l:sp . ' ' . l:thisfile
 					endif
@@ -77,6 +89,12 @@ function! Spit(choice,direction,...)
 				endif
 				if a:choice < 2
 					execute l:sp . ' ' . file
+					if a:choice == -1 && l:w == 1
+						let l:w = 0
+						let l:sp = 'split'
+						"let l:memory = &splitbelow
+						"execute 'set splitbelow'
+					endif
 				else
 					let l:sp = l:sp . ' ' . file
 				endif
@@ -99,6 +117,9 @@ function! Spit(choice,direction,...)
 		endif
 	endif
 	execute l:dirchange
+	"if a:choice == -1 && l:memory == 0
+		"execute 'set nosplitbelow'
+	"endif
 endfunction
 " Creating new command names
 com! -nargs=* -complete=file Spit       call Spit(0,0,<f-args>)
@@ -113,6 +134,12 @@ com! -nargs=* -complete=file VspitRight call Spit(1,1,<f-args>)
 com! -nargs=* -complete=file Vspr       call Spit(1,1,<f-args>)
 com! -nargs=* -complete=file VspitLeft  call Spit(1,-1,<f-args>)
 com! -nargs=* -complete=file Vspl       call Spit(1,-1,<f-args>)
+com! -nargs=* -complete=file Wspit      call Spit(-1,0,<f-args>)
+com! -nargs=* -complete=file Wsp        call Spit(-1,0,<f-args>)
+com! -nargs=* -complete=file WspitRight call Spit(-1,1,<f-args>)
+com! -nargs=* -complete=file Wspr       call Spit(-1,1,<f-args>)
+com! -nargs=* -complete=file WspitLeft  call Spit(-1,-1,<f-args>)
+com! -nargs=* -complete=file Wspl       call Spit(-1,-1,<f-args>)
 com! -nargs=* -complete=file E          call Spit(2,0,<f-args>)
 " Redo command mapping
 cab sp   Spit
@@ -121,5 +148,8 @@ cab spd  SpitDown
 cab vsp  Vspit
 cab vspr VspitRight
 cab vspl VspitLeft
+cab wsp  Wspit
+cab wspr WspitRight
+cab wspl WspitLeft
 cab e    E
 
