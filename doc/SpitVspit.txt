@@ -31,6 +31,11 @@ Vsp[it] *Vspit* *Vsp*
     Splits vertically the screen with the given filenames (can be more than one!)
     :vsp is remapped to this function.
 
+Wsp[it] *Wspit* *Wsp*
+    Used with a single file, it is equal to vsplit.
+    Used with multiple arguments, makes vsplit with the first, then splits
+    horizontally the other files in the newly created vertical buffer.
+
 E *E*
     Adds to your editting files the ones that you give. They can also be more
     than one or conaining the regexp '*' character. (See |Spit| for further
@@ -49,6 +54,13 @@ VspitLeft (Vspl) *VspitLeft* *Vspl*
 
 VspitRight (Vspr) *VspitRight* *Vspr*
     |Vspit| forced to the right.
+
+WspitLeft (Wspl) *WspitLeft* *Wspl*
+    |Wspit| forced to the left.
+
+WspitRight (Wspr) *WspitRight* *Wspr*
+    |Wspit| forced to the right.
+
 
 CONFIGURATION *SpitVspit-configuration*
 

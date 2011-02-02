@@ -2,7 +2,7 @@
 "  Plugin written and maintained by Gael Induni
 " This is SpitVspit function to split among many files even :sp *.cpp<cr> works!!
 "  Last modified: Fri 28 Jan 2011 09:38:10 AM CET
-"  Version 2.1
+"  Version 2.1.1
 "
 "  Inspired from http://vim.wikia.com/wiki/Opening_multiple_files_from_a_single_command-line
 "  By salmanhalim
@@ -14,7 +14,7 @@ if exists("g:loaded_SpitVspit") && g:loaded_SpitVspit
 	finish
 endif
 let g:loaded_SpitVspit = 1
-let g:SpitVspit_version = '2.1'
+let g:SpitVspit_version = '2.1.1'
 
 function! Spit(choice,direction,...)
 	let l:sp = 'split'
