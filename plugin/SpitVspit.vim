@@ -1,8 +1,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Plugin written and maintained by Gael Induni
-" This is SpitVspit function to split among many files even :sp *.cpp<cr> works!!
-"  Last modified: Fri 28 Jan 2011 09:38:10 AM CET
-"  Version 2.1.1
+" This is SpitVspit plugin to split among many files even :sp *.cpp<cr> works!!
+"  Last modified: Mon 05 Sep 2011 01:53:10 PM CET
+"  Version 2.1.3
 "
 "  Inspired from http://vim.wikia.com/wiki/Opening_multiple_files_from_a_single_command-line
 "  By salmanhalim
@@ -14,40 +14,40 @@ if exists("g:loaded_SpitVspit") && g:loaded_SpitVspit
 	finish
 endif
 let g:loaded_SpitVspit = 1
-let g:SpitVspit_version = '2.1.1'
+let g:SpitVspit_version = "2.1.3"
 
 function! Spit(choice,direction,...)
-	let l:sp = 'split'
+	let l:sp = "split"
 	let l:isbelow = &splitbelow
 	let l:isright = &splitright
-	let l:dirchange = ''
+	let l:dirchange = ""
 	let l:w = 0
 	let l:memory = 0
 	let l:old_ok = 0
-	let l:keep_first = ''
+	let l:keep_first = ""
 	let l:stop_cond = 1
 	let l:old_file = @%
 	let i = a:0
 	if a:choice == 0 && ( ( a:direction > 0 && l:isbelow ) || ( a:direction < 0 && !l:isbelow ) )
-		let l:dirchange = 'set invsplitbelow'
+		let l:dirchange = "set invsplitbelow"
 	elseif a:choice == 1
-		let l:sp = 'vsplit'
+		let l:sp = "vsplit"
 		if ( a:direction > 0 && !l:isright ) || ( a:direction < 0 && l:isright )
-			let l:dirchange = 'set invsplitright'
+			let l:dirchange = "set invsplitright"
 		endif
 	elseif a:choice == -1
 		let l:w = 1
-		let l:sp = 'vsplit'
+		let l:sp = "vsplit"
 		if ( a:direction > 0 && !l:isright ) || ( a:direction < 0 && l:isright )
-			let l:dirchange = 'set invsplitright'
+			let l:dirchange = "set invsplitright"
 		endif
 	elseif a:choice == 2
-		if l:old_file != ''
-			"let l:sp = l:sp . ' ' . l:old_file
+		if l:old_file != ""
+			"let l:sp = l:sp . " " . l:old_file
 			let l:old_ok = 1
-			let l:sp = '99argadd'
+			let l:sp = "99argadd"
 		else
-			let l:sp = 'args'
+			let l:sp = "args"
 		endif
 		let i = 1
 	endif
@@ -58,45 +58,45 @@ function! Spit(choice,direction,...)
 		endif
 	else
 		while l:stop_cond
-			execute 'let file = expand( a:' . i .' )'
+			execute "let file = expand( a:" . i ." )"
 			if match( file, '*' ) > -1 || match( file, '\n' ) > -1
 				let l:files = expand( file )
 				if match( l:files, '*' ) != -1
-					echoerr 'Sorry, files ' . l:files . ' not found...'
+					echoerr "Sorry, files " . l:files . " not found..."
 					break
 				endif
 				while l:files != ""
 					let l:thisfile = substitute( l:files, "\n.*$", "", "" )
 					let l:files = substitute( l:files, l:thisfile, "", "" )
 					let l:files = substitute( l:files, "^\n", "", "" )
-					if l:keep_first == ''
+					if l:keep_first == ""
 						let l:keep_first = l:thisfile
 					endif
 					if a:choice < 2 && l:thisfile != l:old_file
 						" Don't split *.* if current file
-						execute l:sp . ' ' . l:thisfile
+						execute l:sp . " " . l:thisfile
 						if a:choice == -1 && l:w == 1
 							let l:w = 0
-							let l:sp = 'split'
+							let l:sp = "split"
 						endif
 					elseif a:choice == 2
-						let l:sp = l:sp . ' ' . l:thisfile
+						let l:sp = l:sp . " " . l:thisfile
 					endif
 				endwhile
 			else
-				if l:keep_first == ''
+				if l:keep_first == ""
 					let l:keep_first = file
 				endif
 				if a:choice < 2
-					execute l:sp . ' ' . file
+					execute l:sp . " " . file
 					if a:choice == -1 && l:w == 1
 						let l:w = 0
-						let l:sp = 'split'
+						let l:sp = "split"
 						"let l:memory = &splitbelow
-						"execute 'set splitbelow'
+						"execute "set splitbelow"
 					endif
 				else
-					let l:sp = l:sp . ' ' . file
+					let l:sp = l:sp . " " . file
 				endif
 			endif
 			if a:choice < 2
@@ -111,14 +111,14 @@ function! Spit(choice,direction,...)
 			execute l:sp
 			if l:old_ok
 				while @% != l:keep_first
-					execute 'next'
+					execute "next"
 				endwhile
 			endif
 		endif
 	endif
 	execute l:dirchange
 	"if a:choice == -1 && l:memory == 0
-		"execute 'set nosplitbelow'
+		"execute "set nosplitbelow"
 	"endif
 endfunction
 " Creating new command names
@@ -151,5 +151,6 @@ cab vspl VspitLeft
 cab wsp  Wspit
 cab wspr WspitRight
 cab wspl WspitLeft
-cab e    E
+"cab e    E
+" Is the last one a good idea???
 
