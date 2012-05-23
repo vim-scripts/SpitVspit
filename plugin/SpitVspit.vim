@@ -1,23 +1,29 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"  Plugin written and maintained by Gael Induni
-" This is SpitVspit plugin to split among many files even :sp *.cpp<cr> works!!
-"  Last modified: Mon 05 Sep 2011 01:53:10 PM CET
-"  Version 2.1.3
-"
-"  Inspired from http://vim.wikia.com/wiki/Opening_multiple_files_from_a_single_command-line
-"  By salmanhalim
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" To be always up-to-date:
-" GetLatestVimScripts: 2918 1 :AutoInstall: SpitVspit
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""  Plugin written and maintained by Gael Induni
+"" This is SpitVspit plugin to split among many files,
+""  even :sp *.cpp<cr> works!!
+"" Last modified: Wed 23 May 2012 02:51:50 PM CEST
+"" Version 2.2
+""
+"" Inspired from http://vim.wikia.com/wiki/Opening_multiple_files_from_a_single_command-line
+""  By salmanhalim
+""
+"" To be always up-to-date:
+"" GetLatestVimScripts: 2918 1 :AutoInstall: SpitVspit
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if exists("g:loaded_SpitVspit") && g:loaded_SpitVspit
 	finish
 endif
 let g:loaded_SpitVspit = 1
-let g:SpitVspit_version = "2.1.3"
+let g:SpitVspit_version = 2.2
 
-function! Spit(choice,direction,...)
-	let l:sp = "split"
+function Spit( choice, direction, my_count, ... )
+	let l:sp = ""
+	if a:my_count > 0
+		let l:sp = a:my_count
+	endif
+	let l:sp = l:sp . "split"
 	let l:isbelow = &splitbelow
 	let l:isright = &splitright
 	let l:dirchange = ""
@@ -73,7 +79,7 @@ function! Spit(choice,direction,...)
 						let l:keep_first = l:thisfile
 					endif
 					if a:choice < 2 && l:thisfile != l:old_file
-						" Don't split *.* if current file
+						"" Don't split *.* if current file
 						execute l:sp . " " . l:thisfile
 						if a:choice == -1 && l:w == 1
 							let l:w = 0
@@ -121,36 +127,38 @@ function! Spit(choice,direction,...)
 		"execute "set nosplitbelow"
 	"endif
 endfunction
-" Creating new command names
-com! -nargs=* -complete=file Spit       call Spit(0,0,<f-args>)
-com! -nargs=* -complete=file Sp         call Spit(0,0,<f-args>)
-com! -nargs=* -complete=file SpitUp     call Spit(0,1,<f-args>)
-com! -nargs=* -complete=file Spu        call Spit(0,1,<f-args>)
-com! -nargs=* -complete=file SpitDown   call Spit(0,-1,<f-args>)
-com! -nargs=* -complete=file Spd        call Spit(0,-1<f-args>)
-com! -nargs=* -complete=file Vspit      call Spit(1,0,<f-args>)
-com! -nargs=* -complete=file Vsp        call Spit(1,0,<f-args>)
-com! -nargs=* -complete=file VspitRight call Spit(1,1,<f-args>)
-com! -nargs=* -complete=file Vspr       call Spit(1,1,<f-args>)
-com! -nargs=* -complete=file VspitLeft  call Spit(1,-1,<f-args>)
-com! -nargs=* -complete=file Vspl       call Spit(1,-1,<f-args>)
-com! -nargs=* -complete=file Wspit      call Spit(-1,0,<f-args>)
-com! -nargs=* -complete=file Wsp        call Spit(-1,0,<f-args>)
-com! -nargs=* -complete=file WspitRight call Spit(-1,1,<f-args>)
-com! -nargs=* -complete=file Wspr       call Spit(-1,1,<f-args>)
-com! -nargs=* -complete=file WspitLeft  call Spit(-1,-1,<f-args>)
-com! -nargs=* -complete=file Wspl       call Spit(-1,-1,<f-args>)
-com! -nargs=* -complete=file E          call Spit(2,0,<f-args>)
-" Redo command mapping
-cab sp   Spit
-cab spu  SpitUp
-cab spd  SpitDown
-cab vsp  Vspit
-cab vspr VspitRight
-cab vspl VspitLeft
-cab wsp  Wspit
-cab wspr WspitRight
-cab wspl WspitLeft
-"cab e    E
-" Is the last one a good idea???
+"" Creating new command names
+com! -nargs=* -complete=file -range=0 Spit       call Spit( 0, 0, <count>, <f-args> )
+com! -nargs=* -complete=file -range=0 SpitUp     call Spit( 0, 1, <count>, <f-args> )
+com! -nargs=* -complete=file -range=0 SpitDown   call Spit( 0,-1, <count>, <f-args> )
+com! -nargs=* -complete=file -range=0 Vspit      call Spit( 1, 0, <count>, <f-args> )
+com! -nargs=* -complete=file -range=0 VspitRight call Spit( 1, 1, <count>, <f-args> )
+com! -nargs=* -complete=file -range=0 VspitLeft  call Spit( 1,-1, <count>, <f-args> )
+com! -nargs=* -complete=file -range=0 Wspit      call Spit(-1, 0, <count>, <f-args> )
+com! -nargs=* -complete=file -range=0 WspitRight call Spit(-1, 1, <count>, <f-args> )
+com! -nargs=* -complete=file -range=0 WspitLeft  call Spit(-1,-1, <count>, <f-args> )
+com! -nargs=* -complete=file          E          call Spit( 2, 0, 0,       <f-args> )
+"" Redo command mapping
+"" Problem with the built-in commands (v)sp when giving a count, but I assume
+""   a count is given only for case where the built-in commands are well working.
+cabbrev Sp   Spit
+cabbrev sp   Spit
+cabbrev Spu  SpitUp
+cabbrev spu  SpitUp
+cabbrev Spd  SpitDown
+cabbrev spd  SpitDown
+cabbrev Vsp  Vspit
+cabbrev vsp  Vspit
+cabbrev Vspr VspitRight
+cabbrev vspr VspitRight
+cabbrev Vspl VspitLeft
+cabbrev vspl VspitLeft
+cabbrev Wsp  Wspit
+cabbrev wsp  Wspit
+cabbrev Wspr WspitRight
+cabbrev wspr WspitRight
+cabbrev Wspl WspitLeft
+cabbrev wspl WspitLeft
+"cabbrev e    E
+"" Is the last one a good idea???
 

@@ -1,12 +1,14 @@
 *SpitVspit.txt* Improved split/vsplit/edit function
 
 Author: Gael Induni *SpitVspit-author*
-License: Same terms as Vim itself (see |license|)
+Licence: Same terms as Vim itself (see |licence|)
+
 
 INTRODUCTION *SpitVspit* *SpitVspit.vim*
 
 SpitVspit function enables the user to use the split/vsplit/edit function
 further
+
 
 REQUIREMENTS *SpitVspit-requirements*
 
@@ -18,6 +20,7 @@ stuff (if any). What is used are the commands
   |:command|
   |:cabclear|
 
+
 COMMANDS *SpitVspit-commands*
 
 Sp[it] *Spit* *Sp*
@@ -28,12 +31,12 @@ Sp[it] *Spit* *Sp*
     :sp is remapped to this function.
 
 Vsp[it] *Vspit* *Vsp*
-    Splits vertically the screen with the given filenames (can be more than one!)
+    |Spit| vertically the screen with the given filenames (can be more than one!)
     :vsp is remapped to this function.
 
 Wsp[it] *Wspit* *Wsp*
-    Used with a single file, it is equal to vsplit.
-    Used with multiple arguments, makes vsplit with the first, then splits
+    Used with a single file, it is equivalent to |Vspit|.
+    Used with multiple arguments, makes |:vsplit| with the first, then |:split|
     horizontally the other files in the newly created vertical buffer.
 
 E *E*
@@ -46,7 +49,7 @@ E *E*
 SpitUp (Spu) *SpitUp* *Spu*
     |Spit| forced up.
 
-SpitDown (Spd)*SpitDown* *Spd*
+SpitDown (Spd) *SpitDown* *Spd*
     |Spit| forced down.
 
 VspitLeft (Vspl) *VspitLeft* *Vspl*
@@ -69,5 +72,7 @@ g:loaded_SpitVspit *g:loaded_SpitVspit*
 
 g:SpitVspit_version *g:SpitVspit_version*
     |SpitVspit| version as string
+
+
 
 vim:tw=78:et:ft=help:norl:
